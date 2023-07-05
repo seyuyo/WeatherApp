@@ -1,5 +1,7 @@
 import requests
 import datetime as dt
+import tkinter as tk
+from tkinter import ttk
 
 # base request URL
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
@@ -51,6 +53,7 @@ def temp_max_fahrenheit() -> str:
     return str(int(resp['main']['temp_min'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
 
 
+
 # weather
 def sky() -> str:
     return resp['weather'][0]['description']
@@ -83,7 +86,7 @@ proxies = {
 # response from the api
 resp = requests.get(Q_URL, proxies=proxies).json()
 
-print(resp)
+# print(resp)
 
 print(celsius())
 print(fahrenheit())
@@ -91,3 +94,14 @@ print(sky())
 print(humidity())
 print(pressure())
 print(wind_speed())
+
+# creating the window
+window = tk.Tk()
+window.title("Időjárás")
+window.geometry("900x500")
+window.resizable(False, False)
+window.configure(bg="black")
+
+
+ttk.Label(window, text="Időjárás", font=("Arial", 20), foreground="white", background="black").grid(column=0, row=0)
+window.mainloop()
