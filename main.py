@@ -1,7 +1,8 @@
 import requests
 import datetime as dt
 import tkinter as tk
-from tkinter import ttk
+from tkinter import *
+from PIL import ImageTk, Image
 
 # base request URL
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
@@ -11,7 +12,7 @@ CITY = "Dunaújváros"
 API_KEY = open("api_key", "r").read()
 
 # user credentials for proxy
-USER = "bsimon1"
+USER = open("username", "r").read()
 PASSW = open("password", "r").read()
 
 KELVIN_CELSIUS = 273.15
@@ -100,8 +101,16 @@ window = tk.Tk()
 window.title("Időjárás")
 window.geometry("900x500")
 window.resizable(False, False)
-window.configure(bg="black")
+window.configure(bg="white")
 
 
-ttk.Label(window, text="Időjárás", font=("Arial", 20), foreground="white", background="black").grid(column=0, row=0)
+search_bar = ImageTk.PhotoImage(file="assets/search_b.png")
+img = Label(image=search_bar)
+img.place(x=350, y=20)
+
+Entry(window, width=15, font=("Arial", 20)).place(x=50, y=20)
+
+
+# ttk.Label(window, text="Időjárás", font=("Arial", 20), foreground="white", background="black").grid(column=0, row=0)
 window.mainloop()
+
