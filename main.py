@@ -1,5 +1,6 @@
 import requests
 import datetime as dt
+from time import strftime
 import tkinter as tk
 from tkinter import *
 from PIL import ImageTk, Image
@@ -71,6 +72,14 @@ def pressure() -> str:
 def wind_speed() -> str:
     return str(resp['wind']['speed']) + " m/s"
 
+# clock
+def time():
+    string = dt.datetime.now().strftime("%H:%M:%S")
+    lbl.config(text=string)
+    # update every second
+    lbl.after(1000, time)
+
+
 
 # main request url
 Q_URL = BASE_URL + "q=" + CITY + "&appid=" + API_KEY
@@ -84,11 +93,10 @@ proxies = {
     "https": http_proxy
 }
 
-# response from the api
+# response from the API
 resp = requests.get(Q_URL, proxies=proxies).json()
 
 # print(resp)
-
 print(celsius())
 print(fahrenheit())
 print(sky())
@@ -101,15 +109,25 @@ window = tk.Tk()
 window.title("Időjárás")
 window.geometry("900x500")
 window.resizable(False, False)
-window.configure(bg="white")
+window.configure(background="white")
 
+# creating the search bar
+search_bar = ImageTk.PhotoImage(file="assets/search_bar2.png")
+img = Label(image=search_bar, bg="white", fg="white").place(relx=0.5, rely=0.15, anchor=CENTER)
+# img.place(relx=0.5, rely=0.15, anchor=CENTER)
 
-search_bar = ImageTk.PhotoImage(file="assets/search_b.png")
-img = Label(image=search_bar)
-img.place(x=350, y=20)
+# creating the search button
+search_icon = ImageTk.PhotoImage(file="assets/search_icon.png")
+search_button = Button(image=search_icon, bg="white", fg="white", border=0).place(relx=0.63, rely=0.15, anchor=CENTER)
 
-Entry(window, width=15, font=("Arial", 20)).place(x=50, y=20)
+# input field
+Entry(window, font=("Arial", 14), background="white", foreground="black", border=0)\
+    .place( width=200, height=25, relx=0.5, rely=0.15, anchor=CENTER)
 
+# clock
+lbl = Label(window, font=("Arial", 20, 'bold'), background="white", foreground="black")
+lbl.place(x=150, y=250)
+time()
 
 # ttk.Label(window, text="Időjárás", font=("Arial", 20), foreground="white", background="black").grid(column=0, row=0)
 window.mainloop()
