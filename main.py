@@ -6,7 +6,7 @@ from PIL import ImageTk, Image
 
 # base request URL
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
-CITY = "New York"
+
 
 # loading the API key
 API_KEY = open("api_key", "r").read()
@@ -87,7 +87,8 @@ def time():
     # update every second
     lbl.after(1000, time)
 
-
+def refresh():
+    pass
 
 
 def for_weather_icon() -> str:
@@ -117,11 +118,15 @@ def for_weather_icon() -> str:
         return "assets/cloudy2.png"
 
 
-def save_entry():
-    pass
+def exec_city_req():
+    if CITY.get() == "":
+        return BASE_URL + "q=" + "Dunaújváros" + "&appid=" + API_KEY
+    else:
+        print(CITY.get())
+        return BASE_URL + "q=" + CITY.get() + "&appid=" + API_KEY
 
 
-Q_URL = BASE_URL + "q=" + CITY + "&appid=" + API_KEY
+#Q_URL = BASE_URL + "q=" + CITY.get() + "&appid=" + API_KEY
 
 # main proxy
 http_proxy = "http://" + USER + ":" + PASSW + "@proxy.dunaferr.hu:8080"
@@ -132,18 +137,14 @@ proxies = {
     "https": http_proxy
 }
 
-# response from the API
-resp = requests.get(Q_URL, proxies=proxies).json()
 
-print(resp)
-
-# print(resp)
-print(celsius())
-print(fahrenheit())
-print(sky())
-print(humidity())
-print(pressure())
-print(wind_speed())
+# # print(resp)
+# print(celsius())
+# print(fahrenheit())
+# print(sky())
+# print(humidity())
+# print(pressure())
+# print(wind_speed())
 
 # creating the window
 window = tk.Tk()
@@ -151,26 +152,35 @@ window.title("Weather App")
 window.geometry("900x500")
 window.resizable(False, False)
 window.configure(background="white")
+CITY = tk.StringVar()
+
+# response from the API
+resp = requests.get(exec_city_req()).json()
+
+print(resp)
 
 # creating the search bar
 search_bar = ImageTk.PhotoImage(file="assets/search_bar2.png")
 Label(image=search_bar, bg="white", fg="white").place(relx=0.5, rely=0.13, anchor=CENTER)
+print(CITY.get())
 
 info_bar = ImageTk.PhotoImage(file="assets/bar.png")
 Label(image=info_bar).place(relx=0.5, rely=0.7, anchor=CENTER)
 
+# input field
+Entry(window, font=("Arial", 14), background="white", foreground="black", border=0, textvariable=CITY) \
+    .place(width=200, height=25, relx=0.5, rely=0.13, anchor=CENTER)
+
 # creating the search button
 search_icon = ImageTk.PhotoImage(file="assets/search_icon.png")
-Button(image=search_icon, bg="white", fg="white", border=0, text="save", command=save_entry) \
+Button(image=search_icon, bg="white", fg="white", border=0, text="save", command=exec_city_req) \
     .place(relx=0.63, rely=0.13, anchor=CENTER)
+refresh()
 
 # creating the weather icon
 weather_photo = ImageTk.PhotoImage(file=for_weather_icon())
 Label(image=weather_photo, bg="white", fg="white", ).place(relx=0.2, rely=0.3, anchor=CENTER)
 
-# input field
-Entry(window, font=("Arial", 14), background="white", foreground="black", border=0) \
-    .place(width=200, height=25, relx=0.5, rely=0.13, anchor=CENTER)
 
 # clock
 label_bg = ImageTk.PhotoImage(file="assets/clock.jpg")
