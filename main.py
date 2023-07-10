@@ -87,9 +87,6 @@ def time():
     lbl.after(1000, time)
 
 
-def refresh():
-    pass
-
 
 def for_weather_icon() -> str:
     if sky() == "Clear" or sky() == "Clear sky" or sky() == "Sunny":
@@ -189,6 +186,7 @@ def update_data():
         # update the weather icon
         weather_photo = ImageTk.PhotoImage(file=for_weather_icon())
         weather_label.configure(image=weather_photo)
+        city_label.configure(text=CITY.get())
 
         # update the temperature
         celsius_label.configure(text=celsius())
@@ -214,7 +212,7 @@ window.after(12000, update_data)
 search_icon = ImageTk.PhotoImage(file="assets/search_icon.png")
 Button(image=search_icon, bg="white", fg="white", border=0, text="save", command=update_data) \
     .place(relx=0.63, rely=0.13, anchor=CENTER)
-refresh()
+
 
 # clock
 label_bg = ImageTk.PhotoImage(file="assets/clock.jpg")
