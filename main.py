@@ -1,8 +1,14 @@
+import customtkinter
 import requests
 import datetime as dt
 import tkinter as tk
 from tkinter import *
 from PIL import ImageTk, Image
+import customtkinter as ctk
+
+customtkinter.set_appearance_mode("dark")
+customtkinter.set_default_color_theme("dark-blue")
+
 
 # base request URL
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
@@ -107,7 +113,7 @@ def for_weather_icon() -> str:
         return "assets/sunny.png"
     elif sky() == "Clouds" or sky() == "Few clouds" or sky() == "Scattered clouds" or sky() == "Broken clouds" or \
             sky() == "Felhős":
-        return "assets/cloudy.png"
+        return "assets/rain.png"
     elif sky() == "Rain" or sky() == "Light rain" or sky() == "Moderate rain" or sky() == "Heavy rain" or \
             sky() == "Very heavy rain" or sky() == "Extreme rain" or sky() == "Freezing rain" or \
             sky() == "Light intensity shower rain" or sky() == "Shower rain" or \
@@ -159,23 +165,30 @@ proxies = {
 # print(wind_speed())
 
 # creating the window
-window = tk.Tk()
+window = ctk.CTk()
 window.title("Weather App")
 window.geometry("900x500")
 window.resizable(False, False)
-window.configure(background="white")
+
+# window.configure(background="#00A5F9")
+
+
+# creating the background
+background = ImageTk.PhotoImage(file="assets/sky2.jpeg")
+Label(image=background).place(relx=0.5, rely=0.5, anchor=CENTER)
+
 
 
 CITY = tk.StringVar()
 
 # response from the API
-resp = requests.get(exec_city_req(), proxies=proxies).json()
+resp = requests.get(exec_city_req()).json()
 
 print(resp)
 
 # creating the search bar
 search_bar = ImageTk.PhotoImage(file="assets/search_bar2.png")
-Label(image=search_bar, bg="white", fg="white").place(relx=0.5, rely=0.13, anchor=CENTER)
+Label(image=search_bar, bg="#00A5F9", fg="white").place(relx=0.5, rely=0.13, anchor=CENTER)
 print(CITY.get())
 
 info_bar = ImageTk.PhotoImage(file="assets/bar.png")
@@ -196,7 +209,7 @@ def update_data():
     # call the API and update the data
     global resp, weather_photo
     param = BASE_URL + "q=" + save_city() + "&lang=hu&appid=" + API_KEY + "&units=metric"
-    resp = requests.get(param, proxies=proxies).json()
+    resp = requests.get(param).json()
     print(resp)
 
     if resp.get("cod") == 200:
@@ -252,20 +265,21 @@ current_date()
 
 # create the weather icon label and keep a reference to it
 weather_photo = ImageTk.PhotoImage(file=for_weather_icon())
-weather_label = Label(image=weather_photo, bg="white", fg="white")
+weather_label = Label(image=weather_photo, bg="black", fg="white")
 weather_label.place(relx=0.2, rely=0.3, anchor=CENTER)
 
-city_label = Label(window, text=CITY.get(), font=("Arial", 16, 'bold'), background="white", foreground="black")
+city_label = Label(window, text=CITY.get(), font=("Sans", 16, 'bold'), background="#00A5F9", foreground="white")
 city_label.place(relx=0.2, rely=0.54, anchor=CENTER)
 
 """                     temperature                     """
 
+
 # create the temperature labels and keep references to them
-celsius_label = Label(window, text=celsius(), font=("Arial", 35, 'bold'), background="white", foreground="#D40C00")
+celsius_label = Label(window, text=celsius(), font=("Arial", 35, 'bold'), bg="black", foreground="#D40C00")
 celsius_label.place(relx=0.4, rely=0.3, anchor=CENTER)
 
-feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Arial", 16, 'bold'), background="white",
-                                 foreground="black")
+feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Arial", 16, 'bold'), background="black",
+                                 foreground="white")
 feels_like_celsius_label.place(relx=0.45, rely=0.4, anchor=CENTER)
 
 """                     other infos                     """
