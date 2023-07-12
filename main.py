@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import *
 from PIL import ImageTk, Image
 
+
 # base request URL
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
 
@@ -13,6 +14,9 @@ API_KEY = open("api_key", "r").read()
 # user credentials for proxy
 USER = open("username", "r").read()
 PASSW = open("password", "r").read()
+
+isCelsius = True
+isFahrenheit = False
 
 KELVIN_CELSIUS = 273.15
 KELVIN_FAHRENHEIT = 457.87
@@ -29,11 +33,11 @@ proxies = {
 
 # converting Kelvin to Celsius
 def celsius() -> str:
-    return str(int(resp['main']['temp'] - KELVIN_CELSIUS)) + "°C"
+    return str(int(resp['main']['temp'] - KELVIN_CELSIUS)) + "°"
 
 
 def feels_like_celsius() -> str:
-    return sky() + " | HŐÉRZET " + str(int(resp['main']['feels_like'] - KELVIN_CELSIUS)) + "°C"
+    return "Hőérzet " + str(int(resp['main']['feels_like'] - KELVIN_CELSIUS)) + "°C"
 
 
 def temp_min_celsius() -> str:
@@ -51,7 +55,7 @@ def fahrenheit() -> str:
 
 
 def feels_like_fahrenheit() -> str:
-    return "HŐÉRZET " + str(int(resp['main']['feels_like'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
+    return "Hőérzet " + str(int(resp['main']['feels_like'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
 
 
 def temp_min_fahrenheit() -> str:
@@ -69,23 +73,38 @@ def error() -> str:
 
 # weather
 def sky() -> str:
-    return resp['weather'][0]['main']
-
+    weather = resp['weather'][0]['main']
+    if weather == "Clear":
+        return "Derült"
+    elif weather == "Clouds":
+        return "Felhős"
+    elif weather == "Rain":
+        return "Esős"
+    elif weather == "Thunderstorm":
+        return "Viharos"
+    elif weather == "Snow":
+        return "havazás"
+    elif weather == "Mist":
+        return "Ködös"
+    elif weather == "Smoke":
+        return "Szmogos"
+    else:
+        return weather
 
 def sky_description() -> str:
     return resp['weather'][0]['description']
 
 
 def humidity() -> str:
-    return str(resp['main']['humidity']) + "%"
+    return "Páratartalom " + str(resp['main']['humidity']) + "%"
 
 
 def pressure() -> str:
-    return str(resp['main']['pressure']) + " hPa"
+    return "Légnyomás " + str(resp['main']['pressure']) + " hPa"
 
 
 def wind_speed() -> str:
-    return str(int(resp['wind']['speed'] * 3.6)) + " km/h"
+    return "szélsebesség " + str(int(resp['wind']['speed'] * 3.6)) + " km/h"
 
 
 # clock
@@ -98,30 +117,32 @@ def time():
 
 
 def for_weather_icon() -> str:
-    if sky() == "Clear" or sky() == "Clear sky" or sky() == "Sunny":
+    if sky() == "Clear" or sky() == "Clear sky" or sky() == "Sunny" or sky() == "Derült":
         return "assets/sunny.png"
-    elif sky() == "Clouds" or sky() == "Few clouds" or sky() == "Scattered clouds" or sky() == "Broken clouds":
+    elif sky() == "Clouds" or sky() == "Few clouds" or sky() == "Scattered clouds" or sky() == "Broken clouds" \
+            or sky() == "Felhős":
         return "assets/cloudy.png"
     elif sky() == "Rain" or sky() == "Light rain" or sky() == "Moderate rain" or sky() == "Heavy rain" or \
             sky() == "Very heavy rain" or sky() == "Extreme rain" or sky() == "Freezing rain" or \
             sky() == "Light intensity shower rain" or sky() == "Shower rain" or \
-            sky() == "Heavy intensity shower rain" or sky() == "Ragged shower rain":
+            sky() == "Heavy intensity shower rain" or sky() == "Ragged shower rain" or sky() == "Esős":
         return "assets/rainy.png"
     elif sky() == "Thunderstorm" or sky() == "Thunderstorm with light rain" or sky() == "Thunderstorm with rain" or \
             sky() == "Thunderstorm with heavy rain" or sky() == "Light thunderstorm" or \
             sky() == "Heavy thunderstorm" or sky() == "Ragged thunderstorm" or \
             sky() == "Thunderstorm with light drizzle" or \
-            sky() == "Thunderstorm with drizzle" or sky() == "Thunderstorm with heavy drizzle":
+            sky() == "Thunderstorm with drizzle" or sky() == "Thunderstorm with heavy drizzle" or sky() == "Viharos":
         return "assets/thunderstorm.png"
     elif sky() == "Snow" or sky() == "Light snow" or sky() == "Heavy snow" or sky() == "Sleet" or \
             sky() == "Light shower sleet" or sky() == "Shower sleet" or sky() == "Light rain and snow" or \
             sky() == "Rain and snow" or sky() == "Light shower snow" or sky() == "Shower snow" or \
-            sky() == "Heavy shower snow":
+            sky() == "Heavy shower snow" or sky() == "Havazás":
         return "assets/snowy.png"
     elif sky() == "Mist" or sky() == "Smoke" or sky() == "Haze" or sky() == "Sand, dust whirls" or \
             sky() == "Fog" or sky() == "Sand" or sky() == "Dust" or sky() == "Volcanic ash" or \
-            sky() == "Squalls" or sky() == "Tornado":
+            sky() == "Squalls" or sky() == "Tornado" or sky() == "Ködös":
         return "assets/foggy.png"
+
 
 
 def exec_city_req():
@@ -138,7 +159,7 @@ window = tk.Tk()
 window.title("Weather App")
 window.geometry("900x500")
 window.resizable(False, False)
-window.configure(background="#00A5F9")
+window.configure(background="#4f4fff")
 
 CITY = tk.StringVar()
 
@@ -147,19 +168,25 @@ resp = requests.get(exec_city_req(), proxies=proxies).json()
 
 print(resp)
 
-# creating the search bar
-search_bar = ImageTk.PhotoImage(file="assets/search_bar4.png")
-Label(image=search_bar, bg="#00A5F9", fg="#00A5F9").place(relx=0.5, rely=0.13, anchor=CENTER)
-print(CITY.get().capitalize())
 
-# info_bar = ImageTk.PhotoImage(file="assets/bar.png")
-# info_label = Label(image=info_bar)
-# info_label.place(relx=0.5, rely=0.7, anchor=CENTER)
+def active_button():
+    global isCelsius, isFahrenheit, to_celsius_button, to_fahrenheit_button
 
-# input field
-Entry(window, font=("Open sans", 14), background="white", foreground="black", border=0, textvariable=CITY) \
-    .place(width=170, height=25, relx=0.5, rely=0.13, anchor=CENTER)
+    if isCelsius:
+        isCelsius = True
+        isFahrenheit = False
 
+        to_celsius_button.configure(background="#4f4fff", foreground="white")
+
+        to_fahrenheit_button.configure(background="#4f4fff", foreground="#909090")
+
+    else:
+        isCelsius = False
+        isFahrenheit = True
+
+        to_celsius_button.configure(background="#4f4fff", foreground="#909090")
+
+        to_fahrenheit_button.configure(background="#4f4fff", foreground="white")
 
 def save_city():
     city = CITY.get()
@@ -175,7 +202,7 @@ def update_data():
     if resp.get("cod") == 200:
         # update the weather icon
         weather_photo = ImageTk.PhotoImage(file=for_weather_icon())
-        weather_label.configure(image=weather_photo, background="#00A5F9")
+        weather_label.configure(image=weather_photo, background="#4f4fff")
         city_label.configure(text=CITY.get().capitalize())
 
         # update the temperature
@@ -200,54 +227,84 @@ window.after(12000, update_data)
 
 
 # CLOCK
-lbl = Label(window, font=("Arial", 20, 'bold'), background="#00A5F9", foreground="white")
+lbl = Label(window, font=("Arial", 20, 'bold'), background="#4f4fff", foreground="white")
 lbl.place(relx=0.8, rely=0.3, anchor=CENTER)
 time()
 
 
 # create the weather icon label and keep a reference to it
 weather_photo = ImageTk.PhotoImage(file=for_weather_icon())
-weather_label = Label(image=weather_photo, bg="#00A5F9", fg="white")
-weather_label.place(relx=0.2, rely=0.3, anchor=CENTER)
+weather_label = Label(image=weather_photo, bg="#4f4fff", fg="white")
+weather_label.place(relx=0.4, rely=0.3, anchor=CENTER)
 
 
 
-city_label = Label(window, text=CITY.get(), font=("Open sans", 25, 'bold'), background="#00A5F9", foreground="white")
-city_label.place(relx=0.15, rely=0.15, anchor=CENTER)
+city_label = Label(window, text=CITY.get(), font=("Open sans", 25, 'bold'), background="#4f4fff", foreground="white")
+city_label.place(relx=0.5, rely=0.15, anchor=CENTER)
 
 
 """                     temperature                     """
 
 # create the temperature labels and keep references to them
 
-celsius_label = Label(window, text=celsius(), font=("Arial", 28, 'bold'), background="#00A5F9", foreground="#D40C00")
-celsius_label.place(relx=0.35, rely=0.3, anchor=CENTER)
+celsius_label = Label(window, text=celsius(), font=("Arial", 32, 'bold'), background="#4f4fff", foreground="black")
+celsius_label.place(relx=0.495, rely=0.3, anchor=CENTER)
 
 
-feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Arial", 16, 'bold'), background="#00A5F9", foreground="black")
-feels_like_celsius_label.place(relx=0.4, rely=0.4, anchor=CENTER)
+feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Arial", 15, 'normal'), background="#4f4fff",
+                                 foreground="white")
+feels_like_celsius_label.place(relx=0.3, rely=0.48, anchor=CENTER)
 
 """                     other infos                     """
 
 # create other information labels and keep references to them
 
-humidity_label = Label(window, text=humidity(), font=("Arial", 15, 'bold'), background="#00A5F9", foreground="white")
-humidity_label.place(relx=0.22, rely=0.725, anchor=CENTER)
+humidity_label = Label(window, text=humidity(), font=("Arial", 15, 'normal'), background="#4f4fff", foreground="white")
+humidity_label.place(relx=0.3, rely=0.55, anchor=CENTER)
 
 
-pressure_label = Label(window, text=pressure(), font=("Arial", 15, 'bold'), background="#00A5F9", foreground="white")
-pressure_label.place(relx=0.41, rely=0.725, anchor=CENTER)
+pressure_label = Label(window, text=pressure(), font=("Arial", 15, 'normal'), background="#4f4fff", foreground="white")
+pressure_label.place(relx=0.52, rely=0.48, anchor=CENTER)
 
 
-wind_speed_label = Label(window, text=wind_speed(), font=("Arial", 15, 'bold'), background="#00A5F9", foreground="white")
-wind_speed_label.place(relx=0.6, rely=0.725, anchor=CENTER)
+wind_speed_label = Label(window, text=wind_speed(), font=("Arial", 15, 'normal'), background="#4f4fff", foreground="white")
+wind_speed_label.place(relx=0.52, rely=0.55, anchor=CENTER)
 
 
-sky_label_description = Label(window, text=sky_description(), font=("Arial", 15, 'bold'), background="#00A5F9", foreground="white")
-sky_label_description.place(relx=0.78, rely=0.725, anchor=CENTER)
+sky_label = Label(window, text=sky(), font=("Arial", 15, 'bold'), background="#4f4fff", foreground="white")
+sky_label.place(relx=0.5, rely=0.4, anchor=CENTER)
 
 
-search_button = Button(window,background="white", foreground="white", border=0, command=update_data, width=2)
-search_button.place(relx=0.61, rely=0.13, anchor=CENTER)
+sky_label_description = Label(window, text=sky_description(), font=("Arial", 15, 'normal'), background="#4f4fff", foreground="white")
+sky_label_description.place(relx=0.72, rely=0.48, anchor=CENTER)
+
+
+# creating the search bar
+Label(window, foreground="white", background="#4f4fff", border=2).place(relx=0.75, rely=0.1, anchor=CENTER)
+print(CITY.get().capitalize())
+
+# ENTRY FIELDS
+
+# input field
+input_field = Entry(window, justify="center", font=("Open sans", 18), bg="#2e2eff", fg="white", border=0,
+                    textvariable=CITY)
+input_field.place(width=150, height=25, relx=0.83, rely=0.1, anchor=CENTER)
+
+
+# BUTTONS
+
+to_celsius_button = Button(window, text="C", command=active_button ,font=("Open sans", 15, 'bold'), background="#4f4fff",
+                           foreground="white", border=0)
+to_celsius_button.place(relx=0.56, rely=0.25, anchor=CENTER)
+
+
+to_fahrenheit_button = Button(window, text="F", command=active_button ,font=("Open sans", 15, 'bold'),
+                              background="#4f4fff", foreground="#909090", border=0)
+to_fahrenheit_button.place(relx=0.56, rely=0.33, anchor=CENTER)
+
+
+search_button_icon = ImageTk.PhotoImage(file="assets/search_icon2.png")
+search_button = Button(image=search_button_icon ,background="#4f4fff", foreground="black", border=0, command=update_data)
+search_button.place(relx=0.96, rely=0.1, anchor=CENTER)
 
 window.mainloop()
