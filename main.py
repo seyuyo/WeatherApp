@@ -84,8 +84,8 @@ def temp_max_fahrenheit() -> str:
     return str(int(resp['main']['temp_min'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
 
 def temp_min_max_fahrenheit() -> str:
-    return str(int(resp['main']['temp_min'] * (9 / 5) - KELVIN_CELSIUS)) + "°F / " + \
-        str(int(resp['main']['temp_max'] * (9 / 5) - KELVIN_CELSIUS)) + "°F"
+    return str(int(resp['main']['temp_min'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F / " + \
+        str(int(resp['main']['temp_max'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
 
 
 """
@@ -246,7 +246,7 @@ def active_button_celsius():
     isCelsius = True
     isFahrenheit = False
 
-    to_celsius_button.configure(background="#c5e90b", foreground="black")
+    to_celsius_button.configure(background="black", foreground="white")
 
     to_fahrenheit_button.configure(background="#4f4fff", foreground="black")
 
@@ -255,6 +255,8 @@ def active_button_celsius():
     feels_like_celsius_label.configure(text=feels_like_celsius())
 
     wind_speed_label.configure(text=wind_speed())
+
+    min_max_celsius.configure(text=temp_min_max_celsius())
 
 
 """ which unit is active: Fahrenheit """
@@ -266,13 +268,15 @@ def active_button_fahrenheit():
 
     to_celsius_button.configure(background="#4f4fff", foreground="black")
 
-    to_fahrenheit_button.configure(background="#c5e90b", foreground="black")
+    to_fahrenheit_button.configure(background="black", foreground="white")
 
     celsius_label.configure(text=fahrenheit())
 
     feels_like_celsius_label.configure(text=feels_like_fahrenheit())
 
     wind_speed_label.configure(text=wind_speed_mph())
+
+    min_max_celsius.configure(text=temp_min_max_fahrenheit())
 
 
 def save_city():
@@ -304,6 +308,7 @@ def update_data():
         humidity_label.configure(text=humidity())
         pressure_label.configure(text=pressure())
         wind_speed_label.configure(text=wind_speed())
+        sky_label.configure(text=sky())
         sky_label_description.configure(text=sky_description())
         min_max_celsius.configure(text=temp_min_max_celsius())
     else:
@@ -338,14 +343,14 @@ celsius_label.place(relx=0.495, rely=0.29, anchor=CENTER)
 
 feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Garamond", 16, 'bold'), background="#4f4fff",
                                  foreground="white")
-feels_like_celsius_label.place(relx=0.3, rely=0.48, anchor=CENTER)
+feels_like_celsius_label.place(relx=0.275, rely=0.48, anchor=CENTER)
 
 """                     other infos                     """
 
 # create other information labels and keep references to them
 
 humidity_label = Label(window, text=humidity(), font=("Garamond", 16, 'bold'), background="#4f4fff", foreground="black")
-humidity_label.place(relx=0.3, rely=0.55, anchor=CENTER)
+humidity_label.place(relx=0.275, rely=0.55, anchor=CENTER)
 
 pressure_label = Label(window, text=pressure(), font=("Garamond", 16, 'bold'), background="#4f4fff", foreground="black")
 pressure_label.place(relx=0.52, rely=0.48, anchor=CENTER)
@@ -372,14 +377,14 @@ print(CITY.get().capitalize())
 # ENTRY FIELDS
 
 # input field
-input_field = Entry(window, justify="center", font=("Open sans", 18), bg="#2e2eff", fg="white", border=1,
-                    textvariable=CITY)
-input_field.place(width=150, height=25, relx=0.83, rely=0.1, anchor=CENTER)
+input_field = Entry(window, justify="center", font=("Open sans", 18), bg="black", fg="white", border=0,
+                    textvariable=CITY, insertbackground="white")
+input_field.place(width=170, height=30, relx=0.83, rely=0.1, anchor=CENTER)
 
 # BUTTONS
 
 to_celsius_button = Button(window, text="C", command=active_button_celsius, font=("Open sans", 16, 'bold'),
-                           background="#c5e90b", foreground="black", border=0)
+                           background="black", foreground="white", border=0)
 to_celsius_button.place(relx=0.56, rely=0.25, anchor=CENTER)
 
 to_fahrenheit_button = Button(window, text="F", command=active_button_fahrenheit, font=("Open sans", 16, 'bold'),
