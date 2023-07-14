@@ -223,11 +223,16 @@ window = tk.Tk()
 window.title("Weather App")
 window.geometry("900x500+500+250")
 window.resizable(False, False)
-window.configure(background="#4f4fff")
+
+frame = tk.Frame(window, bg="#878787")
+frame.place(relwidth=1, relheight=0.5)
+
+frame2 = tk.Frame(window, bg="black")
+frame2.place(rely=0.5, relwidth=1, relheight=0.5)
 
 canvas = tk.Canvas(window, width=600, height=0.5, border=0, borderwidth=0, highlightthickness=0)
 canvas.place(x=150, y=220)
-canvas.configure(background='#4f4fff', border=0)
+canvas.configure(background='#878787', border=0)
 # Egy vonal rajzolása
 canvas.create_line(0, 0, 600, 0, fill="black", width=0)
 
@@ -246,9 +251,9 @@ def active_button_celsius():
     isCelsius = True
     isFahrenheit = False
 
-    to_celsius_button.configure(background="black", foreground="white")
+    to_celsius_button.configure(background="black", foreground="#878787")
 
-    to_fahrenheit_button.configure(background="#4f4fff", foreground="black")
+    to_fahrenheit_button.configure(background="#878787", foreground="black")
 
     celsius_label.configure(text=celsius())
 
@@ -266,9 +271,9 @@ def active_button_fahrenheit():
     isCelsius = False
     isFahrenheit = True
 
-    to_celsius_button.configure(background="#4f4fff", foreground="black")
+    to_celsius_button.configure(background="#878787", foreground="black")
 
-    to_fahrenheit_button.configure(background="black", foreground="white")
+    to_fahrenheit_button.configure(background="black", foreground="#878787")
 
     celsius_label.configure(text=fahrenheit())
 
@@ -294,7 +299,7 @@ def update_data():
     if resp.get("cod") == 200:
         # update the weather icon
         weather_photo = ImageTk.PhotoImage(file=for_weather_icon())
-        weather_label.configure(image=weather_photo, background="#4f4fff")
+        weather_label.configure(image=weather_photo, background="#878787")
         city_label.configure(text=CITY.get().capitalize())
 
         # update the temperature
@@ -322,77 +327,77 @@ def update_data():
 window.after(12000, update_data)
 
 # CLOCK
-lbl = Label(window, font=("Georgia", 20, 'bold'), background="#4f4fff", foreground="black")
+lbl = Label(window, font=("Georgia", 20, 'bold'), background="#878787", foreground="black")
 lbl.place(relx=0.8, rely=0.3, anchor=CENTER)
 time()
 
 # create the weather icon label and keep a reference to it
 weather_photo = ImageTk.PhotoImage(file=for_weather_icon())
-weather_label = Label(image=weather_photo, bg="#4f4fff", fg="white")
+weather_label = Label(image=weather_photo, bg="#878787", fg="white")
 weather_label.place(relx=0.4, rely=0.3, anchor=CENTER)
 
-city_label = Label(window, text=CITY.get(), font=("Open sans", 25, 'bold'), background="#4f4fff", foreground="white")
+city_label = Label(window, text=CITY.get(), font=("Open sans", 28, 'bold'), background="#878787", foreground="black")
 city_label.place(relx=0.5, rely=0.15, anchor=CENTER)
 
 """                     temperature                     """
 
 # create the temperature labels and keep references to them
 
-celsius_label = Label(window, text=celsius(), font=("Arial", 32, 'bold'), background="#4f4fff", foreground="black")
+celsius_label = Label(window, text=celsius(), font=("Arial", 32, 'bold'), background="#878787", foreground="black")
 celsius_label.place(relx=0.495, rely=0.29, anchor=CENTER)
 
-feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Garamond", 16, 'bold'), background="#4f4fff",
-                                 foreground="white")
+feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Garamond", 16, 'bold'), background="#878787",
+                                 foreground="black")
 feels_like_celsius_label.place(relx=0.275, rely=0.48, anchor=CENTER)
 
 """                     other infos                     """
 
 # create other information labels and keep references to them
 
-humidity_label = Label(window, text=humidity(), font=("Garamond", 16, 'bold'), background="#4f4fff", foreground="black")
+humidity_label = Label(window, text=humidity(), font=("Garamond", 16, 'bold'), background="#878787", foreground="black")
 humidity_label.place(relx=0.275, rely=0.55, anchor=CENTER)
 
-pressure_label = Label(window, text=pressure(), font=("Garamond", 16, 'bold'), background="#4f4fff", foreground="black")
+pressure_label = Label(window, text=pressure(), font=("Garamond", 16, 'bold'), background="#878787", foreground="black")
 pressure_label.place(relx=0.52, rely=0.48, anchor=CENTER)
 
-wind_speed_label = Label(window, text=wind_speed(), font=("Garamond", 16, 'bold'), background="#4f4fff",
-                         foreground="white")
+wind_speed_label = Label(window, text=wind_speed(), font=("Garamond", 16, 'bold'), background="#878787",
+                         foreground="black")
 wind_speed_label.place(relx=0.52, rely=0.55, anchor=CENTER)
 
-sky_label = Label(window, text=sky(), font=("Open sans", 18, 'bold'), background="#4f4fff", foreground="white")
+sky_label = Label(window, text=sky(), font=("Open sans", 18, 'bold'), background="#878787", foreground="black")
 sky_label.place(relx=0.5, rely=0.4, anchor=CENTER)
 
-sky_label_description = Label(window, text=sky_description(), font=("Garamond", 16, 'bold'), background="#4f4fff",
-                              foreground="white")
+sky_label_description = Label(window, text=sky_description(), font=("Garamond", 16, 'bold'), background="#878787",
+                              foreground="black")
 sky_label_description.place(relx=0.75, rely=0.48, anchor=CENTER)
 
-min_max_celsius = Label(window, text=temp_min_max_celsius(), font=("Garamond", 16, 'bold'), background="#4f4fff",
+min_max_celsius = Label(window, text=temp_min_max_celsius(), font=("Garamond", 16, 'bold'), background="#878787",
                         foreground="black")
 min_max_celsius.place(relx=0.75, rely=0.55, anchor=CENTER)
 
 # creating the search bar
-Label(window, foreground="white", background="#4f4fff", border=2).place(relx=0.75, rely=0.1, anchor=CENTER)
+Label(window, foreground="black", background="#878787", border=2).place(relx=0.75, rely=0.1, anchor=CENTER)
 print(CITY.get().capitalize())
 
 # ENTRY FIELDS
 
 # input field
-input_field = Entry(window, justify="center", font=("Open sans", 18), bg="black", fg="white", border=0,
-                    textvariable=CITY, insertbackground="white")
+input_field = Entry(window, justify="center", font=("Open sans", 18), bg="#878787", fg="black", border=0,
+                    textvariable=CITY, insertbackground="black")
 input_field.place(width=170, height=30, relx=0.83, rely=0.1, anchor=CENTER)
 
 # BUTTONS
 
 to_celsius_button = Button(window, text="C", command=active_button_celsius, font=("Open sans", 16, 'bold'),
-                           background="black", foreground="white", border=0)
+                           background="black", foreground="#878787", border=0)
 to_celsius_button.place(relx=0.56, rely=0.25, anchor=CENTER)
 
 to_fahrenheit_button = Button(window, text="F", command=active_button_fahrenheit, font=("Open sans", 16, 'bold'),
-                              background="#4f4fff", foreground="black", border=0)
+                              background="#878787", foreground="black", border=0)
 to_fahrenheit_button.place(relx=0.56, rely=0.33, anchor=CENTER)
 
 search_button_icon = ImageTk.PhotoImage(file="assets/search_icon2.png")
-search_button = Button(image=search_button_icon, background="#4f4fff", foreground="black", border=0,
+search_button = Button(image=search_button_icon, background="#878787", foreground="black", border=0,
                        command=update_data)
 search_button.place(relx=0.96, rely=0.1, anchor=CENTER)
 
