@@ -31,52 +31,104 @@ proxies = {
 }
 
 
-# converting Kelvin to Celsius
+"""
+        Converting kelvin to celsius
+"""
 def celsius() -> str:
     return str(int(resp['main']['temp'] - KELVIN_CELSIUS)) + "°"
 
 
+"""
+        what the weather feels like in celsius
+"""
 def feels_like_celsius() -> str:
     return "Hőérzet |" + str(int(resp['main']['feels_like'] - KELVIN_CELSIUS)) + "°C"
 
 
+"""
+    Minimum and maximum temperature in celsius
+"""
 def temp_min_celsius() -> str:
     return str(int(resp['main']['temp_min'] - KELVIN_CELSIUS)) + "°C"
-
 
 def temp_max_celsius() -> str:
     return str(int(resp['main']['temp_max'] - KELVIN_CELSIUS)) + "°C"
 
-
 def temp_min_max_celsius() -> str:
-    return str(int(resp['main']['temp_min'] - KELVIN_CELSIUS)) + "°C / " + str(
-        int(resp['main']['temp_max'] - KELVIN_CELSIUS)) + "°C"
+    return str(int(resp['main']['temp_min'] - KELVIN_CELSIUS)) + "°C / " + \
+        str(int(resp['main']['temp_max'] - KELVIN_CELSIUS)) + "°C"
 
 
-# converting kelvin to fahrenheit
+"""
+        converting kelvin to fahrenheit
+"""
 
 def fahrenheit() -> str:
     return str(int(resp['main']['temp'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°"
 
 
+"""
+        what the weather feels like in fahrenheit
+"""
 def feels_like_fahrenheit() -> str:
-    return "Hőérzet " + str(int(resp['main']['feels_like'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
+    return "Hőérzet |" + str(int(resp['main']['feels_like'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
 
 
+"""
+    Minimum and maximum temperature in fahrenheit
+"""
 def temp_min_fahrenheit() -> str:
     return str(int(resp['main']['temp_min'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
-
 
 def temp_max_fahrenheit() -> str:
     return str(int(resp['main']['temp_min'] * (9 / 5) - KELVIN_FAHRENHEIT)) + "°F"
 
+def temp_min_max_fahrenheit() -> str:
+    return str(int(resp['main']['temp_min'] * (9 / 5) - KELVIN_CELSIUS)) + "°F / " + \
+        str(int(resp['main']['temp_max'] * (9 / 5) - KELVIN_CELSIUS)) + "°F"
 
-def error() -> str:
-    if resp['cod'] == 404:
-        return "Nincs ilyen város az adatbázisunkban!"
+
+"""
+        Getting the pollution level in integer and returning the string value in hungarian
+"""
+def air_pollution() -> str:
+    pollution = coordinate_to_city()
+
+    if pollution == 1:
+        return "Kiváló"
+    elif pollution == 2:
+        return "Jó"
+    elif pollution == 3:
+        return "megfelelő"
+    elif pollution == 4:
+        return "Részben rossz"
+    elif pollution == 5:
+        return "Rossz"
 
 
-# weather
+"""
+        Ask the API to search the given city longitude and latitude and return the pollution level
+"""
+def coordinate_to_city() -> str:
+    # URL and request for the city coordinates: latitude and longtitude
+    coordinate_url = f"http://api.openweathermap.org/geo/1.0/direct?q={CITY.get()}&appid={API_KEY}"
+    response = requests.get(coordinate_url, proxies=proxies).json()
+
+    # getting the latitude and longtitude from the json data
+    latitude = response[0]["lat"]
+    longtitude = response[0]["lon"]
+
+    # URL and request for the air pollution level, using the latitude and longtitude
+    air_pollution_url = f"http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat={latitude}&lon={longtitude}&appid={API_KEY}"
+    air_poll_req = requests.get(air_pollution_url, proxies=proxies).json()
+
+    # returning the air pollution level
+    return air_poll_req['list'][0]['main']['aqi']
+
+
+"""
+        Getting and translating the weather data
+"""
 def sky() -> str:
     weather = resp['weather'][0]['main']
     if weather == "Clear":
@@ -97,23 +149,29 @@ def sky() -> str:
         return weather
 
 
+""" sky description """
 def sky_description() -> str:
     return resp['weather'][0]['description'].capitalize()
 
 
+""" humidity in % """
 def humidity() -> str:
     return "Páratartalom |" + str(resp['main']['humidity']) + "%"
 
 
+""" pressure in hPa """
 def pressure() -> str:
     return "Légnyomás |" + str(resp['main']['pressure']) + " hPa"
 
 
+""" Wind speed in km/h """
 def wind_speed() -> str:
-    return "Szélsebesség |" + str(int(resp['wind']['speed'] * 3.6)) + " km/h"
+    return "Szélsebesség |" + str(round(float(resp['wind']['speed'] * 3.6), 1)) + " km/h"
 
+def wind_speed_mph() -> str:
+    return "Szélsebesség |" + str(round(float(resp['wind']['speed'] * 2.237), 1)) + " mph/h"
 
-# clock
+""" Time hour:minute:second restarts every second """
 def time():
     string = dt.datetime.now().strftime("%H:%M:%S")
     lbl.config(text=string)
@@ -121,6 +179,7 @@ def time():
     lbl.after(1000, time)
 
 
+""" Choose the weather icon based on the weather """
 def for_weather_icon() -> str:
     if sky() == "Clear" or sky() == "Clear sky" or sky() == "Sunny" or sky() == "Derült":
         return "assets/sunny.png"
@@ -149,6 +208,7 @@ def for_weather_icon() -> str:
         return "assets/foggy.png"
 
 
+""" Compiles the request URL based on the city name """
 def exec_city_req():
     if CITY.get() == "":
         CITY.set("Dunaújváros")
@@ -179,6 +239,7 @@ resp = requests.get(exec_city_req(), proxies=proxies).json()
 print(resp)
 
 
+""" which unit is active: Celsius """
 def active_button_celsius():
     global isCelsius, isFahrenheit, to_celsius_button, to_fahrenheit_button, celsius_label
 
@@ -191,7 +252,12 @@ def active_button_celsius():
 
     celsius_label.configure(text=celsius())
 
+    feels_like_celsius_label.configure(text=feels_like_celsius())
 
+    wind_speed_label.configure(text=wind_speed())
+
+
+""" which unit is active: Fahrenheit """
 def active_button_fahrenheit():
     global isCelsius, isFahrenheit, to_celsius_button, to_fahrenheit_button, celsius_label
 
@@ -203,6 +269,10 @@ def active_button_fahrenheit():
     to_fahrenheit_button.configure(background="#c5e90b", foreground="black")
 
     celsius_label.configure(text=fahrenheit())
+
+    feels_like_celsius_label.configure(text=feels_like_fahrenheit())
+
+    wind_speed_label.configure(text=wind_speed_mph())
 
 
 def save_city():
@@ -335,5 +405,5 @@ for item in data['list']:
     if date not in forecast_data:
         forecast_data[date] = []
     forecast_data[date].append(item)
-
+print(forecast_data)
 window.mainloop()
