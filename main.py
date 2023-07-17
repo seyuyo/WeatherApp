@@ -95,15 +95,15 @@ def air_pollution() -> str:
     pollution = coordinate_to_city()
 
     if pollution == 1:
-        return "Kiváló"
+        return "|AQI Kiváló"
     elif pollution == 2:
-        return "Jó"
+        return "|AQI Jó"
     elif pollution == 3:
-        return "megfelelő"
+        return "|AQI megfelelő"
     elif pollution == 4:
-        return "Részben rossz"
+        return "|AQI Részben rossz"
     elif pollution == 5:
-        return "Rossz"
+        return "|AQI Rossz"
 
 
 """
@@ -148,7 +148,6 @@ def sky() -> str:
     else:
         return weather
 
-
 """ sky description """
 def sky_description() -> str:
     return resp['weather'][0]['description'].capitalize()
@@ -169,7 +168,7 @@ def wind_speed() -> str:
     return "Szélsebesség |" + str(round(float(resp['wind']['speed'] * 3.6), 1)) + " km/h"
 
 def wind_speed_mph() -> str:
-    return "Szélsebesség |" + str(round(float(resp['wind']['speed'] * 2.237), 1)) + " mph/h"
+    return "Szélsebesség |" + str(round(float(resp['wind']['speed'] * 2.237), 1)) + " mi/h"
 
 """ Time hour:minute:second restarts every second """
 def time():
@@ -235,6 +234,11 @@ canvas.place(x=150, y=205)
 canvas.configure(background='#878787', border=0)
 # Egy vonal rajzolása
 canvas.create_line(0, 0, 600, 0, fill="black", width=0)
+
+canvas_black = tk.Canvas(window, width=600, height=0.5, border=0, borderwidth=0, highlightthickness=0)
+canvas_black.place(x=150, y=300)
+canvas_black.configure(background='#878787', border=0)
+canvas_black.create_line(0, 0, 600, 0, fill="#878787", width=0)
 
 CITY = tk.StringVar()
 
@@ -305,17 +309,20 @@ def update_data():
         # update the temperature
         if isCelsius:
             celsius_label.configure(text=celsius())
+            wind_speed_label.configure(text=wind_speed())
+            feels_like_celsius_label.configure(text=feels_like_celsius())
+            min_max_celsius.configure(text=temp_min_max_celsius())
         elif isFahrenheit:
             celsius_label.configure(text=fahrenheit())
-        feels_like_celsius_label.configure(text=feels_like_celsius())
+            wind_speed_label.configure(text=wind_speed_mph())
+            feels_like_celsius_label.configure(text=feels_like_fahrenheit())
+            min_max_celsius.configure(text=temp_min_max_fahrenheit())
 
         # update other information
         humidity_label.configure(text=humidity())
         pressure_label.configure(text=pressure())
-        wind_speed_label.configure(text=wind_speed())
         sky_label.configure(text=sky())
         sky_label_description.configure(text=sky_description())
-        min_max_celsius.configure(text=temp_min_max_celsius())
     else:
         print("City not found", CITY.get().capitalize())
 
@@ -327,7 +334,7 @@ def update_data():
 window.after(12000, update_data)
 
 # CLOCK
-lbl = Label(window, font=("Georgia", 20, 'bold'), background="#878787", foreground="black")
+lbl = Label(window, font=("Open sans", 20, 'bold'), background="#878787", foreground="black")
 lbl.place(relx=0.8, rely=0.3, anchor=CENTER)
 time()
 
@@ -346,7 +353,7 @@ city_label.place(relx=0.5, rely=0.12, anchor=CENTER)
 celsius_label = Label(window, text=celsius(), font=("Arial", 32, 'bold'), background="#878787", foreground="black")
 celsius_label.place(relx=0.495, rely=0.26, anchor=CENTER)
 
-feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Garamond", 16, 'bold'), background="#878787",
+feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Open sans", 15, 'bold'), background="#878787",
                                  foreground="black")
 feels_like_celsius_label.place(relx=0.275, rely=0.45, anchor=CENTER)
 
@@ -354,23 +361,26 @@ feels_like_celsius_label.place(relx=0.275, rely=0.45, anchor=CENTER)
 
 # create other information labels and keep references to them
 
-humidity_label = Label(window, text=humidity(), font=("Garamond", 16, 'bold'), background="black", foreground="#878787")
+humidity_label = Label(window, text=humidity(), font=("Open sans", 15, 'bold'), background="black", foreground="#878787")
 humidity_label.place(relx=0.275, rely=0.55, anchor=CENTER)
 
-pressure_label = Label(window, text=pressure(), font=("Garamond", 16, 'bold'), background="#878787", foreground="black")
+pressure_label = Label(window, text=pressure(), font=("Open sans", 15, 'bold'), background="#878787", foreground="black")
 pressure_label.place(relx=0.52, rely=0.45, anchor=CENTER)
 
-wind_speed_label = Label(window, text=wind_speed(), font=("Garamond", 16, 'bold'), background="black", foreground="#878787")
+wind_speed_label = Label(window, text=wind_speed(), font=("Open sans", 15, 'bold'), background="black", foreground="#878787")
 wind_speed_label.place(relx=0.52, rely=0.55, anchor=CENTER)
 
-sky_label = Label(window, text=sky(), font=("Open sans", 18, 'bold'), background="#878787", foreground="black")
-sky_label.place(relx=0.5, rely=0.37, anchor=CENTER)
+sky_label = Label(window, text=sky(), font=("Open sans", 15, 'bold'), background="#878787", foreground="black")
+sky_label.place(relx=0.41, rely=0.37, anchor=CENTER)
 
-sky_label_description = Label(window, text=sky_description(), font=("Garamond", 16, 'bold'), background="#878787",
+aqi_label = Label(window, text=air_pollution(), font=("Open sans", 15, 'bold'), background="#878787", foreground="black")
+aqi_label.place(relx=0.53, rely=0.37, anchor=CENTER)
+
+sky_label_description = Label(window, text=sky_description(), font=("Open sans", 15, 'bold'), background="#878787",
                               foreground="black")
 sky_label_description.place(relx=0.75, rely=0.45, anchor=CENTER)
 
-min_max_celsius = Label(window, text=temp_min_max_celsius(), font=("Garamond", 16, 'bold'), background="black",
+min_max_celsius = Label(window, text=temp_min_max_celsius(), font=("Open sans", 15, 'bold'), background="black",
                         foreground="#878787")
 min_max_celsius.place(relx=0.75, rely=0.55, anchor=CENTER)
 
@@ -400,22 +410,20 @@ search_button = Button(image=search_button_icon, background="#878787", foregroun
                        command=update_data)
 search_button.place(relx=0.96, rely=0.1, anchor=CENTER)
 
-url = f"https://api.openweathermap.org/data/2.5/forecast?q={CITY.get()}&exclude=daily,minutely&lang=hu&appid={API_KEY}"
+url = f"https://api.openweathermap.org/data/2.5/forecast?q={CITY.get()}&exclude=daily,minutely&lang=hu&appid={API_KEY}&units=metric"
 data = requests.get(url, proxies=proxies).json()
 print(data)
 forecast_data = {}
 
-for item in data['list']:
-    # Az időpont konvertálása
-    timestamp = item['dt']
-    date = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
+for forecast in data["list"]:
+    timestamp = forecast["dt_txt"]
+    temp = forecast["main"]["temp"]
+    weather_description = forecast["weather"][0]["description"]
+    print(f"{timestamp}: {temp} C, {weather_description}")
 
-    # Az adatok hozzáadása a szótárhoz
-    if date not in forecast_data:
-        forecast_data[date] = []
-    forecast_data[date].append(item)
-print(forecast_data)
-
+#timestamp = data["list"][1]["dt_txt"]
+print(data["list"][5]["dt_txt"])
+print(data["list"][5]["main"]["temp"])
 
 
 
@@ -468,5 +476,65 @@ radius = 15
 canvas4.create_polygon(x1+radius, y1, x2-radius, y1, x2, y1+radius, x2, y2-radius,
                       x2-radius, y2, x1+radius, y2, x1, y2-radius, x1, y1+radius,
                       outline='#878787', fill='#878787')
+
+date_txt = data["list"][0]["dt_txt"]
+date = date_txt.split(" ")
+
+label_date = Label(window, text=date[0], font=("Open sans", 20, 'bold'), background="#878787",
+                     foreground="black")
+label_date.place(relx=0.18, rely=0.3, anchor=CENTER)
+
+
+label_time1 = Label(window, text=data["list"][0]["dt_txt"].split(" ")[1], font=("Open sans", 16, 'bold'), background="#878787",
+                    foreground="black")
+label_time1.place(relx=0.2, rely=0.7, anchor=CENTER)
+
+label_time2 = Label(window, text=data["list"][1]["dt_txt"].split(" ")[1], font=("Open sans", 16, 'bold'), background="#878787",
+                    foreground="black")
+label_time2.place(relx=0.4, rely=0.7, anchor=CENTER)
+
+label_time3 = Label(window, text=data["list"][2]["dt_txt"].split(" ")[1], font=("Open sans", 16, 'bold'), background="#878787",
+                    foreground="black")
+label_time3.place(relx=0.6, rely=0.7, anchor=CENTER)
+
+label_time4 = Label(window, text=data["list"][3]["dt_txt"].split(" ")[1], font=("Open sans", 16, 'bold'), background="#878787",
+                    foreground="black")
+label_time4.place(relx=0.8, rely=0.7, anchor=CENTER)
+
+temperature = data["list"][0]["main"]["temp"]
+temperature = int(temperature)
+temperature = str(temperature) + "°C"
+
+label_data1 = Label(window, text=str(int(data["list"][0]["main"]["temp"])) + "°C", font=("Open sans", 16, 'bold'), background="#878787",
+                    foreground="black")
+label_data1.place(relx=0.2, rely=0.77, anchor=CENTER)
+
+label_data2 = Label(window, text=str(int(data["list"][1]["main"]["temp"])) + "°C", font=("Open sans", 16, 'bold'), background="#878787",
+                    foreground="black")
+label_data2.place(relx=0.4, rely=0.77, anchor=CENTER)
+
+label_data3 = Label(window, text=str(int(data["list"][2]["main"]["temp"])) + "°C", font=("Open sans", 16, 'bold'), background="#878787",
+                    foreground="black")
+label_data3.place(relx=0.6, rely=0.77, anchor=CENTER)
+
+label_data4 = Label(window, text=str(int(data["list"][3]["main"]["temp"])) + "°C", font=("Open sans", 16, 'bold'), background="#878787",
+                    foreground="black")
+label_data4.place(relx=0.8, rely=0.77, anchor=CENTER)
+
+weather1 = ImageTk.PhotoImage(file=for_weather_icon())
+label_weather1 = Label(window, image=weather1, background="#878787")
+label_weather1.place(relx=0.2, rely=0.86, anchor=CENTER)
+
+weather2 = ImageTk.PhotoImage(file=for_weather_icon())
+label_weather2 = Label(window, image=weather1, background="#878787")
+label_weather2.place(relx=0.4, rely=0.86, anchor=CENTER)
+
+weather3 = ImageTk.PhotoImage(file=for_weather_icon())
+label_weather3 = Label(window, image=weather1, background="#878787")
+label_weather3.place(relx=0.6, rely=0.86, anchor=CENTER)
+
+weather4 = ImageTk.PhotoImage(file=for_weather_icon())
+label_weather4 = Label(window, image=weather1, background="#878787")
+label_weather4.place(relx=0.8, rely=0.86, anchor=CENTER)
 
 window.mainloop()
