@@ -21,22 +21,20 @@ canvas.create_arc(x2-2*radius, y2-2*radius, x2, y2, start=270, extent=90,
 root.mainloop()
 
 
-"""
-from tkinter import Tk, Canvas
 
-root = Tk()
-canvas = Canvas(root, width=200, height=200)
-canvas.pack()
-
-# Lekerekített négyzet rajzolása
-x1, y1 = 50, 50
-x2, y2 = 150, 150
-radius = 10
-
-canvas.create_polygon(x1+radius, y1, x2-radius, y1, x2, y1+radius, x2, y2-radius, 
-                      x2-radius, y2, x1+radius, y2, x1, y2-radius, x1, y1+radius, 
-                      outline='black', fill='black')
-
-root.mainloop()
-
-"""
+# from tkinter import Tk, Canvas
+#
+# root = Tk()
+# canvas = Canvas(root, width=150, height=150, bg="black")
+# canvas.pack()
+#
+# # Lekerekített négyzet rajzolása
+# x1, y1 = 50, 50
+# x2, y2 = 150, 150
+# radius = 15
+#
+# canvas.create_polygon(x1+radius, y1, x2-radius, y1, x2, y1+radius, x2, y2-radius,
+#                       x2-radius, y2, x1+radius, y2, x1, y2-radius, x1, y1+radius,
+#                       outline='#878787', fill='#878787')
+#
+# root.mainloop()

@@ -231,7 +231,7 @@ frame2 = tk.Frame(window, bg="black")
 frame2.place(rely=0.5, relwidth=1, relheight=0.5)
 
 canvas = tk.Canvas(window, width=600, height=0.5, border=0, borderwidth=0, highlightthickness=0)
-canvas.place(x=150, y=220)
+canvas.place(x=150, y=205)
 canvas.configure(background='#878787', border=0)
 # Egy vonal rajzolása
 canvas.create_line(0, 0, 600, 0, fill="black", width=0)
@@ -334,45 +334,44 @@ time()
 # create the weather icon label and keep a reference to it
 weather_photo = ImageTk.PhotoImage(file=for_weather_icon())
 weather_label = Label(image=weather_photo, bg="#878787", fg="white")
-weather_label.place(relx=0.4, rely=0.3, anchor=CENTER)
+weather_label.place(relx=0.4, rely=0.27, anchor=CENTER)
 
 city_label = Label(window, text=CITY.get(), font=("Open sans", 28, 'bold'), background="#878787", foreground="black")
-city_label.place(relx=0.5, rely=0.15, anchor=CENTER)
+city_label.place(relx=0.5, rely=0.12, anchor=CENTER)
 
 """                     temperature                     """
 
 # create the temperature labels and keep references to them
 
 celsius_label = Label(window, text=celsius(), font=("Arial", 32, 'bold'), background="#878787", foreground="black")
-celsius_label.place(relx=0.495, rely=0.29, anchor=CENTER)
+celsius_label.place(relx=0.495, rely=0.26, anchor=CENTER)
 
 feels_like_celsius_label = Label(window, text=feels_like_celsius(), font=("Garamond", 16, 'bold'), background="#878787",
                                  foreground="black")
-feels_like_celsius_label.place(relx=0.275, rely=0.48, anchor=CENTER)
+feels_like_celsius_label.place(relx=0.275, rely=0.45, anchor=CENTER)
 
 """                     other infos                     """
 
 # create other information labels and keep references to them
 
-humidity_label = Label(window, text=humidity(), font=("Garamond", 16, 'bold'), background="#878787", foreground="black")
+humidity_label = Label(window, text=humidity(), font=("Garamond", 16, 'bold'), background="black", foreground="#878787")
 humidity_label.place(relx=0.275, rely=0.55, anchor=CENTER)
 
 pressure_label = Label(window, text=pressure(), font=("Garamond", 16, 'bold'), background="#878787", foreground="black")
-pressure_label.place(relx=0.52, rely=0.48, anchor=CENTER)
+pressure_label.place(relx=0.52, rely=0.45, anchor=CENTER)
 
-wind_speed_label = Label(window, text=wind_speed(), font=("Garamond", 16, 'bold'), background="#878787",
-                         foreground="black")
+wind_speed_label = Label(window, text=wind_speed(), font=("Garamond", 16, 'bold'), background="black", foreground="#878787")
 wind_speed_label.place(relx=0.52, rely=0.55, anchor=CENTER)
 
 sky_label = Label(window, text=sky(), font=("Open sans", 18, 'bold'), background="#878787", foreground="black")
-sky_label.place(relx=0.5, rely=0.4, anchor=CENTER)
+sky_label.place(relx=0.5, rely=0.37, anchor=CENTER)
 
 sky_label_description = Label(window, text=sky_description(), font=("Garamond", 16, 'bold'), background="#878787",
                               foreground="black")
-sky_label_description.place(relx=0.75, rely=0.48, anchor=CENTER)
+sky_label_description.place(relx=0.75, rely=0.45, anchor=CENTER)
 
-min_max_celsius = Label(window, text=temp_min_max_celsius(), font=("Garamond", 16, 'bold'), background="#878787",
-                        foreground="black")
+min_max_celsius = Label(window, text=temp_min_max_celsius(), font=("Garamond", 16, 'bold'), background="black",
+                        foreground="#878787")
 min_max_celsius.place(relx=0.75, rely=0.55, anchor=CENTER)
 
 # creating the search bar
@@ -390,11 +389,11 @@ input_field.place(width=170, height=30, relx=0.83, rely=0.1, anchor=CENTER)
 
 to_celsius_button = Button(window, text="C", command=active_button_celsius, font=("Open sans", 16, 'bold'),
                            background="black", foreground="#878787", border=0)
-to_celsius_button.place(relx=0.56, rely=0.25, anchor=CENTER)
+to_celsius_button.place(relx=0.56, rely=0.22, anchor=CENTER)
 
 to_fahrenheit_button = Button(window, text="F", command=active_button_fahrenheit, font=("Open sans", 16, 'bold'),
                               background="#878787", foreground="black", border=0)
-to_fahrenheit_button.place(relx=0.56, rely=0.33, anchor=CENTER)
+to_fahrenheit_button.place(relx=0.56, rely=0.3, anchor=CENTER)
 
 search_button_icon = ImageTk.PhotoImage(file="assets/search_icon2.png")
 search_button = Button(image=search_button_icon, background="#878787", foreground="black", border=0,
@@ -416,4 +415,58 @@ for item in data['list']:
         forecast_data[date] = []
     forecast_data[date].append(item)
 print(forecast_data)
+
+
+
+
+canvas = Canvas(window, width=150, height=150, background="black", highlightthickness=0)
+canvas.place(relx=0.2, rely=0.8, anchor=CENTER, x=0, y=0)
+
+# Lekerekített négyzet rajzolása
+x1, y1 = 0, 0
+x2, y2 = 150, 150
+radius = 15
+
+canvas.create_polygon(x1+radius, y1, x2-radius, y1, x2, y1+radius, x2, y2-radius,
+                      x2-radius, y2, x1+radius, y2, x1, y2-radius, x1, y1+radius,
+                      outline='#878787', fill='#878787')
+
+canvas2 = Canvas(window, width=150, height=150, background="black", highlightthickness=0)
+canvas2.place(relx=0.4, rely=0.8, anchor=CENTER, x=0, y=0)
+
+# Lekerekített négyzet rajzolása
+x1, y1 = 0, 0
+x2, y2 = 150, 150
+radius = 15
+
+canvas2.create_polygon(x1+radius, y1, x2-radius, y1, x2, y1+radius, x2, y2-radius,
+                      x2-radius, y2, x1+radius, y2, x1, y2-radius, x1, y1+radius,
+                      outline='#878787', fill='#878787')
+
+
+canvas3 = Canvas(window, width=150, height=150, background="black", highlightthickness=0)
+canvas3.place(relx=0.6, rely=0.8, anchor=CENTER, x=0, y=0)
+
+# Lekerekített négyzet rajzolása
+x1, y1 = 0, 0
+x2, y2 = 150, 150
+radius = 15
+
+canvas3.create_polygon(x1+radius, y1, x2-radius, y1, x2, y1+radius, x2, y2-radius,
+                      x2-radius, y2, x1+radius, y2, x1, y2-radius, x1, y1+radius,
+                      outline='#878787', fill='#878787')
+
+
+canvas4 = Canvas(window, width=150, height=150, background="black", highlightthickness=0)
+canvas4.place(relx=0.8, rely=0.8, anchor=CENTER, x=0, y=0)
+
+# Lekerekített négyzet rajzolása
+x1, y1 = 0, 0
+x2, y2 = 150, 150
+radius = 15
+
+canvas4.create_polygon(x1+radius, y1, x2-radius, y1, x2, y1+radius, x2, y2-radius,
+                      x2-radius, y2, x1+radius, y2, x1, y2-radius, x1, y1+radius,
+                      outline='#878787', fill='#878787')
+
 window.mainloop()
