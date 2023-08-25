@@ -5,6 +5,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 from datetime import datetime
 
+
 # base request URL
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
 
@@ -169,7 +170,7 @@ def sky() -> str:
 
 def sky2(index=0):
     weather = data['list'][index]['weather'][0]['main']
-    print(weather)
+    #print(weather)
     if weather == "Clear":
         return "Derült"
     elif weather == "Clouds":
@@ -349,7 +350,7 @@ def exec_city_req():
         CITY.set("Dunaújváros")
         return f"{BASE_URL}q={CITY.get()}&lang=hu&appid={API_KEY}&units=metric"
     else:
-        print(CITY.get().capitalize())
+        #print(CITY.get().capitalize())
         return f"{BASE_URL}q={CITY.get()}&lang=hu&appid={API_KEY}&units=metric"
 
 
@@ -381,7 +382,7 @@ CITY = tk.StringVar()
 # response from the API
 resp = requests.get(exec_city_req(), proxies=proxies).json()
 
-print(resp)
+#print(resp)
 
 """ which unit is active: Celsius """
 
@@ -451,7 +452,7 @@ def update_data():
 
     resp = requests.get(param, proxies=proxies).json()
     data = requests.get(param2, proxies=proxies).json()
-    print(resp)
+    #print(resp)
 
     if resp.get("cod") == 200:
         # update the weather icon
@@ -500,7 +501,7 @@ def update_data():
         sky_label_description.configure(text=sky_description())
     else:
         error_not_found()
-        print("City not found", CITY.get().capitalize())
+        #print("City not found", CITY.get().capitalize())
 
     # schedule the function to be called again after 2 minutes
     window.after(120000, update_data)
@@ -567,7 +568,7 @@ min_max_celsius.place(relx=0.75, rely=0.55, anchor=CENTER)
 
 # creating the search bar
 Label(window, foreground="black", background="#878787", border=2).place(relx=0.75, rely=0.1, anchor=CENTER)
-print(CITY.get().capitalize())
+#print(CITY.get().capitalize())
 
 # ENTRY FIELDS
 
@@ -593,15 +594,15 @@ search_button.place(relx=0.96, rely=0.1, anchor=CENTER)
 
 url = f"https://api.openweathermap.org/data/2.5/forecast?q={CITY.get()}&exclude=daily,minutely&lang=hu&appid={API_KEY}&units=metric"
 data = requests.get(url, proxies=proxies).json()
-print(data)
+#print(data)
 forecast_data = {}
 
 for forecast in data["list"]:
     timestamp = forecast["dt_txt"]
     temp = forecast["main"]["temp"]
     weather_description = forecast["weather"][0]["description"]
-    print(forecast["weather"][0]["main"])
-    print(f"{timestamp}: {temp} C, {weather_description}")
+    #print(forecast["weather"][0]["main"])
+    #print(f"{timestamp}: {temp} C, {weather_description}")
 
 
 canvas = Canvas(window, width=150, height=150, background="black", highlightthickness=0)
